@@ -3,9 +3,9 @@ package model;
 public class Book extends Item{
 	private BookType type;
 	
-	public Book(int code, BookType type)
+	public Book(String name, int code, BookType type)
 	{
-		super(code);
+		super(name, code);
 		
 		this.type = type;
 	}
