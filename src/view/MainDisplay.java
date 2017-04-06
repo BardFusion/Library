@@ -22,6 +22,7 @@ public class MainDisplay {
 	
 	private JFrame frame;
 	private JPanel controlPanel;
+	private JPanel buttonPanel;
 	private JComboBox<User> userSelector;
 	
 	private JButton borrowButton;
@@ -51,8 +52,9 @@ public class MainDisplay {
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		controlPanel = new JPanel();
-		frame.getContentPane().add(controlPanel, BorderLayout.WEST);
-		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));		
+		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));			
+		buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 		
 		addButton = new JButton("Add");
 		addButton.setAlignmentX(Component.CENTER_ALIGNMENT);		
@@ -89,10 +91,12 @@ public class MainDisplay {
 
 		controlPanel.add(userSelector);
 		controlPanel.add(separator);
+		controlPanel.add(buttonPanel);
 		
 		switchUser((User)userSelector.getSelectedItem());
 		
 		WelcomeDisplay welcomeDisplay = new WelcomeDisplay();
+		frame.getContentPane().add(controlPanel, BorderLayout.WEST);
 		frame.getContentPane().add(welcomeDisplay, BorderLayout.CENTER);
 	}
 	
@@ -100,21 +104,18 @@ public class MainDisplay {
 	{
 		if (newUser instanceof Librarian)
 		{
-			removeButtonFromParent(borrowButton);
-			removeButtonFromParent(returnButton);
+			buttonPanel.removeAll();
 			
-			addButtonToControl(addButton);
-			addButtonToControl(removeButton);
-			addButtonToControl(editButton);
+			buttonPanel.add(addButton);
+			buttonPanel.add(removeButton);
+			buttonPanel.add(editButton);
 		}
 		else if (newUser instanceof Member)
 		{
-			removeButtonFromParent(addButton);
-			removeButtonFromParent(removeButton);
-			removeButtonFromParent(editButton);
+			buttonPanel.removeAll();
 			
-			addButtonToControl(borrowButton);
-			addButtonToControl(returnButton);
+			buttonPanel.add(borrowButton);
+			buttonPanel.add(returnButton);
 		}
 		
 		frame.revalidate();
@@ -126,9 +127,7 @@ public class MainDisplay {
 		switch(newControl)
 		{
 			case "add":
-				removeButtonFromParent(addButton);
-				removeButtonFromParent(removeButton);
-				removeButtonFromParent(editButton);
+				buttonPanel.removeAll();
 				
 				
 				break;
@@ -137,22 +136,6 @@ public class MainDisplay {
 			case "edit":
 				break;
 			default:
-		}
-	}
-	
-	private void removeButtonFromParent(JButton button)
-	{
-		if (button.getParent() != null)
-		{
-			button.getParent().remove(button);
-		}
-	}
-	
-	private void addButtonToControl(JButton button)
-	{
-		if (button.getParent() != controlPanel)
-		{
-			controlPanel.add(button);
 		}
 	}
 }
