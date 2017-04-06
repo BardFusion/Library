@@ -13,17 +13,22 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 import controller.LibraryController;
+import model.Librarian;
+import model.Member;
+import model.User;
 
 public class MainDisplay {
 	private LibraryController libraryController;
 	
 	private JFrame frame;
 	private JPanel controlPanel;
-	private JComboBox<String> userSelector;
+	private JComboBox<User> userSelector;
 	
 	private JButton borrowButton;
 	private JButton returnButton;
 	private JButton addButton;
+	private JButton addMemberButton;
+	private JButton addItemButton;
 	private JButton removeButton;
 	private JButton editButton;
 	
@@ -56,21 +61,27 @@ public class MainDisplay {
 		editButton = new JButton("Edit");
 		editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
+		addButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Hey");
+			}
+		});
+		
 		borrowButton = new JButton("Borrow");
 		borrowButton.setAlignmentX(Component.CENTER_ALIGNMENT);		
 		returnButton = new JButton("Return");
 		returnButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		userSelector = new JComboBox<String>();		
-		for (String userName : libraryController.getUserNames())
+		userSelector = new JComboBox<User>();		
+		for (User user : libraryController.getUsers())
 		{
-			userSelector.addItem(userName);
+			userSelector.addItem(user);
 		}
 		userSelector.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		userSelector.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				switchUser((String)userSelector.getSelectedItem());
+				switchUser((User)userSelector.getSelectedItem());
 			}
 		});		
 		
@@ -79,15 +90,15 @@ public class MainDisplay {
 		controlPanel.add(userSelector);
 		controlPanel.add(separator);
 		
-		switchUser(libraryController.getUserNames().get(0));
+		switchUser((User)userSelector.getSelectedItem());
 		
 		WelcomeDisplay welcomeDisplay = new WelcomeDisplay();
 		frame.getContentPane().add(welcomeDisplay, BorderLayout.CENTER);
 	}
 	
-	private void switchUser(String userName)
+	private void switchUser(User newUser)
 	{
-		if (userName.startsWith("Librarian"))
+		if (newUser instanceof Librarian)
 		{
 			removeButtonFromParent(borrowButton);
 			removeButtonFromParent(returnButton);
@@ -96,7 +107,7 @@ public class MainDisplay {
 			addButtonToControl(removeButton);
 			addButtonToControl(editButton);
 		}
-		if (userName.startsWith("Member"))
+		else if (newUser instanceof Member)
 		{
 			removeButtonFromParent(addButton);
 			removeButtonFromParent(removeButton);
@@ -110,12 +121,29 @@ public class MainDisplay {
 		frame.repaint();
 	}
 	
+	private void switchControl(String newControl)
+	{
+		switch(newControl)
+		{
+			case "add":
+				removeButtonFromParent(addButton);
+				removeButtonFromParent(removeButton);
+				removeButtonFromParent(editButton);
+				
+				
+				break;
+			case "remove":
+				break;
+			case "edit":
+				break;
+			default:
+		}
+	}
+	
 	private void removeButtonFromParent(JButton button)
 	{
 		if (button.getParent() != null)
 		{
-
-			System.out.println("Removing button");
 			button.getParent().remove(button);
 		}
 	}

@@ -18,15 +18,20 @@ public class LibraryController {
 		library.addMember("Mark", "Streetlane 122");
 	}
 	
-	public List<String> getUserNames()
+//	public List<String> getUserNames()
+//	{
+//		List<String> userNames = new ArrayList<String>();
+//		
+//		for (User user : library.getUsers())
+//		{
+//			userNames.add(user.getName());
+//		}
+//		
+//		return userNames;
+//	}
+	
+	public List<User> getUsers()
 	{
-		List<String> userNames = new ArrayList<String>();
-		
-		for (User user : library.getUsers())
-		{
-			userNames.add(user.getName());
-		}
-		
-		return userNames;
+		return library.getUsers();
 	}
 }
