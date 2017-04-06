@@ -3,16 +3,15 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Member {
-	private String name;
+public class Member extends User{
 	private String address;
 	private List<Item> posession;
 	
 	public Member(String name, String address)
 	{
-		this.name = name;
-		this.address = address;
+		super(name);
 		
+		this.address = address;		
 		posession = new ArrayList<Item>();
 	}
 }

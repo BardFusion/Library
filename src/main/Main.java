@@ -1,9 +1,20 @@
 package main;
 
+import java.awt.EventQueue;
+import view.MainDisplay;
+
 public class Main {
 
 	public static void main(String[] args) {
-		System.out.println("I am a library");
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					MainDisplay mainDisplay = new MainDisplay();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 
 	}
 
