@@ -5,18 +5,12 @@ public abstract class User {
 	
 	public User(String name)
 	{
-		if (this instanceof Librarian)
-		{
-			this.name = "Librarian " + name;
-		}
-		else if (this instanceof Member)
-		{
-			this.name = "Member " + name;
-		}
-		else
-		{
-			this.name = "Unknown " + name;
-		}
+		this.name = name;
+	}
+	
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 	
 	public String getName()
@@ -27,6 +21,17 @@ public abstract class User {
 	@Override 
 	public String toString()
 	{
-		return name;
+		if (this instanceof Librarian)
+		{
+			return "Librarian " + name;
+		}
+		else if (this instanceof Member)
+		{
+			return "Member " + name;
+		}
+		else
+		{
+			return "Unknown " + name;
+		}
 	}
 }

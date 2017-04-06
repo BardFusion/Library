@@ -3,7 +3,15 @@ package controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Book;
+import model.BookType;
+import model.CD;
+import model.DVD;
+import model.Item;
 import model.Library;
+import model.Member;
+import model.MovieCategory;
+import model.MusicGenre;
 import model.User;
 
 public class LibraryController {
@@ -18,20 +26,58 @@ public class LibraryController {
 		library.addMember("Mark", "Streetlane 122");
 	}
 	
-//	public List<String> getUserNames()
-//	{
-//		List<String> userNames = new ArrayList<String>();
-//		
-//		for (User user : library.getUsers())
-//		{
-//			userNames.add(user.getName());
-//		}
-//		
-//		return userNames;
-//	}
-	
 	public List<User> getUsers()
 	{
 		return library.getUsers();
+	}
+	
+	public List<Item> getItems()
+	{
+		return library.getItems();
+	}
+	
+	public List<Member> getMembers()
+	{
+		List<Member> members = new ArrayList<Member>();
+		
+		for (User user : getUsers())
+		{
+			if (user instanceof Member)
+			{
+				members.add((Member)user);
+			}
+		}
+		
+		return members;
+	}
+	
+	public void addMember(String name, String address)
+	{
+		library.addMember(name, address);
+	}
+	
+	public void removeMember(Member member)
+	{
+		library.removeMember(member);
+	}
+	
+	public void addBook(String name, BookType type)
+	{
+		library.addBook(name, type);
+	}
+	
+	public void addDVD(String name, MovieCategory category)
+	{
+		library.addDVD(name, category);
+	}
+	
+	public void addCD(String name, MusicGenre genre)
+	{
+		library.addCD(name, genre);
+	}
+	
+	public void removeItem(Item item)
+	{
+		library.removeItem(item);
 	}
 }

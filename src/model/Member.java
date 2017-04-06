@@ -14,4 +14,14 @@ public class Member extends User{
 		this.address = address;		
 		posession = new ArrayList<Item>();
 	}
+	
+	public void setAddress(String address)
+	{
+		this.address = address;
+	}
+	
+	public String getAddress()
+	{
+		return address;
+	}
 }

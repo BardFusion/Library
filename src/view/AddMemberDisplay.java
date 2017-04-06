@@ -10,20 +10,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import model.User;
-
-public class NewMemberDisplay extends JPanel{
+public class AddMemberDisplay extends JPanel{
 	private JLabel nameLabel;
 	private JLabel addressLabel;
 	private JTextField nameTextField;
 	private JTextField addressTextField;
-	private JButton confirmButton;
 	
 	private JPanel namePanel;
 	private JPanel addressPanel;
-	private JPanel buttonPanel;
 	
-	public NewMemberDisplay()
+	public AddMemberDisplay()
 	{
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
@@ -31,8 +27,6 @@ public class NewMemberDisplay extends JPanel{
 		namePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		addressPanel = new JPanel();
 		addressPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		buttonPanel = new JPanel();
-		buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		nameLabel = new JLabel("Name:");
 		nameTextField = new JTextField();
@@ -46,17 +40,23 @@ public class NewMemberDisplay extends JPanel{
 		addressPanel.add(addressLabel);
 		addressPanel.add(addressTextField);
 		
-		confirmButton = new JButton("Confirm");
-		confirmButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-		confirmButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("Confirming");
-			}
-		});
-		buttonPanel.add(confirmButton);
-		
 		add(namePanel);
 		add(addressPanel);
-		add(buttonPanel);
+	}
+	
+	public String getNameEntered()
+	{
+		return nameTextField.getText();
+	}
+	
+	public String getAddressEntered()
+	{
+		return addressTextField.getText();
+	}
+	
+	public void clear()
+	{
+		nameTextField.setText("");
+		addressTextField.setText("");
 	}
 }
