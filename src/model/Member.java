@@ -20,6 +20,11 @@ public class Member extends User{
 		posession.add(item);
 	}
 	
+	public void removeItem(Item item)
+	{
+		posession.remove(item);
+	}
+	
 	public void setAddress(String address)
 	{
 		this.address = address;

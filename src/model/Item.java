@@ -9,7 +9,7 @@ public abstract class Item {
 	{
 		this.name = name;
 		this.code = code;
-		count = 1;
+		count = 2;
 	}
 	
 	public void setName(String name)

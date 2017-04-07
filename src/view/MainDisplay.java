@@ -60,6 +60,7 @@ public class MainDisplay {
 	private RemoveMemberDisplay removeMemberDisplay;
 	
 	private BorrowItemDisplay borrowItemDisplay;
+	private ReturnItemDisplay returnItemDisplay;
 	
 	public MainDisplay()
 	{
@@ -88,6 +89,7 @@ public class MainDisplay {
 		removeMemberDisplay = new RemoveMemberDisplay();
 		
 		borrowItemDisplay = new BorrowItemDisplay();
+		returnItemDisplay = new ReturnItemDisplay();
 		
 		controlPanel = new JPanel();
 		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));			
@@ -136,6 +138,11 @@ public class MainDisplay {
 		});
 		returnButton = new JButton("Return");
 		returnButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		returnButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				switchControl("return");
+			}
+		});
 		
 		confirmButton = new JButton("Confirm");
 		confirmButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -306,6 +313,15 @@ public class MainDisplay {
 				switchUser((User)userSelector.getSelectedItem());	
 			}
 		}
+		else if (displayPanel.getComponent(0) instanceof ReturnItemDisplay)
+		{
+			ReturnItemDisplay currentDisplay = (ReturnItemDisplay)displayPanel.getComponent(0);
+			Member selectedMember = (Member)userSelector.getSelectedItem();
+			Item itemSelected = currentDisplay.getSelectedItem();
+			selectedMember.removeItem(itemSelected);
+			libraryController.incrementItem(itemSelected);
+			switchUser((User)userSelector.getSelectedItem());		
+		}
 	}
 	
 	private void switchUser(User newUser)
@@ -433,6 +449,20 @@ public class MainDisplay {
 				}
 				borrowItemDisplay.updateItemSelection(libraryController.getItems());
 				displayPanel.add(borrowItemDisplay);
+				break;
+			case "return":
+				buttonPanel.removeAll();	
+				buttonPanel.add(backButton);
+				
+				Member selectedMember = (Member)userSelector.getSelectedItem();
+				
+				displayPanel.removeAll();
+				if (selectedMember.getPosession().size() > 0)
+				{
+					buttonPanel.add(confirmButton);
+				}
+				returnItemDisplay.updateItemSelection(selectedMember.getPosession());
+				displayPanel.add(returnItemDisplay);
 				break;
 		}
 		
