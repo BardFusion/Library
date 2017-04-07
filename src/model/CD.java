@@ -9,4 +9,14 @@ public class CD extends Item{
 		
 		this.genre = genre;
 	}
+	
+	public void setGenre(MusicGenre genre)
+	{
+		this.genre = genre;
+	}
+	
+	public MusicGenre getGenre()
+	{
+		return genre;
+	}
 }

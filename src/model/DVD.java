@@ -8,4 +8,14 @@ public class DVD extends Item{
 		super(name, code);
 		this.category = category;
 	}
+	
+	public void setCategory(MovieCategory category)
+	{
+		this.category = category;
+	}
+	
+	public MovieCategory getCategory()
+	{
+		return category;
+	}
 }

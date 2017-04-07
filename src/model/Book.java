@@ -9,4 +9,14 @@ public class Book extends Item{
 		
 		this.type = type;
 	}
+	
+	public void setType(BookType type)
+	{
+		this.type = type;
+	}
+	
+	public BookType getType()
+	{
+		return type;
+	}
 }

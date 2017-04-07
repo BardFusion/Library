@@ -41,7 +41,7 @@ public class AddItemDisplay extends JPanel{
 		musicGenreSelector = new JComboBox(MusicGenre.values());
 		
 		additionalPanel = new JPanel();
-		namePanel.setAlignmentX(Component.CENTER_ALIGNMENT);	
+		additionalPanel.setAlignmentX(Component.CENTER_ALIGNMENT);	
 		
 		add(namePanel);
 		add(additionalPanel);
@@ -61,6 +61,22 @@ public class AddItemDisplay extends JPanel{
 			case CD:
 				additionalPanel.add(musicGenreSelector);
 				break;
+		}
+	}
+	
+	public String getItemType()
+	{
+		if (additionalPanel.getComponent(0) == bookTypeSelector)
+		{
+			return "book";
+		}
+		else if (additionalPanel.getComponent(0) == movieCategorySelector)
+		{
+			return "dvd";
+		}
+		else
+		{
+			return "cd";
 		}
 	}
 	

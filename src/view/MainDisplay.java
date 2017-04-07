@@ -13,11 +13,16 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 import controller.LibraryController;
+import model.Book;
 import model.BookType;
+import model.CD;
+import model.DVD;
 import model.Item;
 import model.ItemType;
 import model.Librarian;
 import model.Member;
+import model.MovieCategory;
+import model.MusicGenre;
 import model.User;
 
 public class MainDisplay {
@@ -48,6 +53,7 @@ public class MainDisplay {
 	private AddMemberDisplay addMemberDisplay;
 	private AddItemDisplay addItemDisplay;
 	private RemoveItemDisplay removeItemDisplay;
+	private EditItemDisplay editItemDisplay;
 	private EditMemberDisplay editMemberDisplay;
 	private RemoveMemberDisplay removeMemberDisplay;
 	
@@ -73,6 +79,7 @@ public class MainDisplay {
 		addMemberDisplay = new AddMemberDisplay();
 		addItemDisplay = new AddItemDisplay();
 		removeItemDisplay = new RemoveItemDisplay();
+		editItemDisplay = new EditItemDisplay();
 		editMemberDisplay = new EditMemberDisplay();
 		removeMemberDisplay = new RemoveMemberDisplay();
 		
@@ -159,10 +166,23 @@ public class MainDisplay {
 				{
 					AddItemDisplay currentDisplay = (AddItemDisplay)displayPanel.getComponent(0);
 					String nameEntered = currentDisplay.getNameEntered();
-					BookType bookTypeEntered = currentDisplay.getBookTypeSelected();
 					if (nameEntered.length() > 0)
 					{
-						libraryController.addBook(nameEntered, bookTypeEntered);
+						switch(currentDisplay.getItemType())
+						{
+							case "book":			
+								BookType bookTypeSelected = currentDisplay.getBookTypeSelected();
+								libraryController.addBook(nameEntered, bookTypeSelected);
+								break;
+							case "dvd":
+								MovieCategory movieCategorySelected = currentDisplay.getMovieCategorySelected();
+								libraryController.addDVD(nameEntered, movieCategorySelected);
+								break;
+							case "cd":
+								MusicGenre musicGenreSelected = currentDisplay.getMusicGenreSelected();
+								libraryController.addCD(nameEntered, musicGenreSelected);
+								break;						
+						}
 						currentDisplay.clear();
 						switchUser((User)userSelector.getSelectedItem());
 					}					
@@ -173,6 +193,35 @@ public class MainDisplay {
 					Item itemSelected = currentDisplay.getSelectedItem();
 					libraryController.removeItem(itemSelected);
 					switchUser((User)userSelector.getSelectedItem());
+				}
+				else if (displayPanel.getComponent(0) instanceof EditItemDisplay)
+				{
+					EditItemDisplay currentDisplay = (EditItemDisplay)displayPanel.getComponent(0);
+					String nameEntered = currentDisplay.getNameEntered();
+					if (nameEntered.length() > 0)
+					{
+						Item selectedItem = currentDisplay.getSelectedItem();
+						selectedItem.setName(nameEntered);
+						if (selectedItem instanceof Book)
+						{
+							BookType bookTypeSelected = currentDisplay.getBookTypeSelected();
+							Book selectedBook = (Book)selectedItem;
+							selectedBook.setType(bookTypeSelected);
+						}
+						else if (selectedItem instanceof DVD)
+						{
+							MovieCategory movieCategorySelected = currentDisplay.getMovieCategorySelected();
+							DVD selectedDVD = (DVD)selectedItem;
+							selectedDVD.setCategory(movieCategorySelected);
+						}
+						else if (selectedItem instanceof CD)
+						{
+							MusicGenre musicGenreSelected = currentDisplay.getMusicGenreSelected();
+							CD selectedCD = (CD)selectedItem;
+							selectedCD.setGenre(musicGenreSelected);
+						}
+						switchUser((User)userSelector.getSelectedItem());
+					}					
 				}
 			}
 		});
@@ -283,17 +332,24 @@ public class MainDisplay {
 				break;
 			case "remove":
 				buttonPanel.removeAll();	
-				buttonPanel.add(confirmButton);
 				buttonPanel.add(backButton);
 				
 				displayPanel.removeAll();
 				switch((String)removeSelector.getSelectedItem())
 				{
 					case "member":
+						if (libraryController.getMembers().size() > 0)
+						{
+							buttonPanel.add(confirmButton);
+						}
 						removeMemberDisplay.updateMemberSelection(libraryController.getMembers());
 						displayPanel.add(removeMemberDisplay);
 						break;
 					case "item":
+						if (libraryController.getItems().size() > 0)
+						{
+							buttonPanel.add(confirmButton);
+						}
 						removeItemDisplay.updateItemSelection(libraryController.getItems());
 						displayPanel.add(removeItemDisplay);
 						break;
@@ -301,18 +357,26 @@ public class MainDisplay {
 				break;
 			case "edit":
 				buttonPanel.removeAll();	
-				buttonPanel.add(confirmButton);
 				buttonPanel.add(backButton);
 				
 				displayPanel.removeAll();
 				switch((String)editSelector.getSelectedItem())
 				{
 					case "member":
+						if (libraryController.getMembers().size() > 0)
+						{
+							buttonPanel.add(confirmButton);
+						}
 						editMemberDisplay.updateMemberSelection(libraryController.getMembers());
 						displayPanel.add(editMemberDisplay);
 						break;
 					case "item":
-						switchUser((User)userSelector.getSelectedItem());
+						if (libraryController.getItems().size() > 0)
+						{
+							buttonPanel.add(confirmButton);
+						}
+						editItemDisplay.updateItemSelection(libraryController.getItems());
+						displayPanel.add(editItemDisplay);
 						break;
 				}
 				break;

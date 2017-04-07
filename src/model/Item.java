@@ -12,6 +12,16 @@ public abstract class Item {
 		count = 1;
 	}
 	
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	
+	public String getName()
+	{
+		return name;
+	}
+	
 	public int getCount()
 	{
 		return count;

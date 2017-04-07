@@ -23,6 +23,14 @@ public class RemoveItemDisplay extends JPanel{
 	
 	public void updateItemSelection(List<Item> items)
 	{
+		if (items.size() > 0)
+		{
+			itemSelector.setVisible(true);
+		}
+		else
+		{
+			itemSelector.setVisible(false);
+		}	
 		itemSelector.removeAllItems();
 		for (Item item : items)
 		{

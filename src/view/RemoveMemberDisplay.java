@@ -24,6 +24,14 @@ public class RemoveMemberDisplay extends JPanel{
 	
 	public void updateMemberSelection(List<Member> members)
 	{
+		if (members.size() > 0)
+		{
+			memberSelector.setVisible(true);
+		}
+		else
+		{
+			memberSelector.setVisible(false);
+		}
 		memberSelector.removeAllItems();
 		for (Member member : members)
 		{
