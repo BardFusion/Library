@@ -12,8 +12,13 @@ public abstract class Item {
 	{
 		this.name = name;
 		this.code = code;
-		count = 2;
+		count = 1;
 		reservationList = new PriorityQueue<Member>();
+	}
+	
+	public boolean isInQueue(Member member)
+	{
+		return reservationList.contains(member);
 	}
 	
 	public void setName(String name)
@@ -23,7 +28,10 @@ public abstract class Item {
 	
 	public void addToQueue(Member member)
 	{
-		reservationList.add(member);
+		if (!reservationList.contains(member))
+		{
+			reservationList.add(member);
+		}
 	}
 	
 	public void removeFromQueue()
@@ -31,7 +39,7 @@ public abstract class Item {
 		reservationList.remove();
 	}
 	
-	public boolean checkQueue()
+	public boolean hasReservations()
 	{
 		if(reservationList.isEmpty())
 		{

@@ -9,6 +9,8 @@ public class Member extends User{
 	private String address;
 	private List<Item> posession;
 	private List<Date> borrowingDates;
+	private List<Item> outstandingReservations;
+	private List<Date> reservationDates;
 	
 	public Member(String name, String address)
 	{
@@ -18,6 +20,13 @@ public class Member extends User{
 		this.address = address;		
 		posession = new ArrayList<Item>();
 		borrowingDates = new ArrayList<Date>();
+		outstandingReservations = new ArrayList<Item>();
+		reservationDates = new ArrayList<Date>();
+	}
+	
+	public boolean hasReservationsReady()
+	{
+		return !outstandingReservations.isEmpty();
 	}
 	
 	public void pay(double amount)
@@ -29,6 +38,23 @@ public class Member extends User{
 	{
 		posession.add(item);
 		borrowingDates.add(new Date());
+	}
+	
+	public void addReadyReservation(Item item)
+	{
+		outstandingReservations.add(item);
+		reservationDates.add(new Date());
+	}
+	
+	public void removeReadyReservation(Item item)
+	{
+		reservationDates.remove(outstandingReservations.indexOf(item));
+		outstandingReservations.remove(item);
+	}
+	
+	public Date getReadyReservationDate(Item item)
+	{
+		return reservationDates.get(outstandingReservations.indexOf(item));
 	}
 	
 	public void removeItem(Item item)
@@ -55,6 +81,11 @@ public class Member extends User{
 	public List<Item> getPosession()
 	{
 		return posession;
+	}
+	
+	public List<Item> getOutstantingReservations()
+	{
+		return outstandingReservations;
 	}
 	
 	public double getMoney()

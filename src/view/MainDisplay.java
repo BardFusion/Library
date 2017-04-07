@@ -35,6 +35,7 @@ public class MainDisplay {
 	private JPanel moneyPanel;
 	private JPanel posessionPanel;
 	private JPanel toPayPanel;
+	private JPanel pickupPanel;
 	private JPanel addPanel;
 	private JPanel removePanel;
 	private JPanel editPanel;
@@ -44,9 +45,11 @@ public class MainDisplay {
 	private JComboBox<String> addSelector;
 	private JComboBox<String> removeSelector;
 	private JComboBox<String> editSelector;
+	private JComboBox<Item> pickupSelector;
 	
 	private JButton borrowButton;
 	private JButton returnButton;
+	private JButton pickupButton;
 	private JButton addButton;
 	private JButton removeButton;
 	private JButton editButton;
@@ -101,6 +104,8 @@ public class MainDisplay {
 		moneyPanel.setLayout(new BoxLayout(moneyPanel, BoxLayout.X_AXIS));
 		posessionPanel = new JPanel();
 		posessionPanel.setLayout(new BoxLayout(posessionPanel, BoxLayout.Y_AXIS));
+		pickupPanel = new JPanel();
+		pickupPanel.setLayout(new BoxLayout(pickupPanel, BoxLayout.X_AXIS));
 		toPayPanel = new JPanel();
 		toPayPanel.setLayout(new BoxLayout(toPayPanel, BoxLayout.Y_AXIS));
 		addPanel = new JPanel();
@@ -149,6 +154,17 @@ public class MainDisplay {
 				switchControl("return");
 			}
 		});
+		pickupButton = new JButton("Pickup");
+		pickupButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		pickupButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Member selectedMember = (Member)userSelector.getSelectedItem();
+				Item selectedItem = (Item)pickupSelector.getSelectedItem();
+				selectedMember.removeReadyReservation(selectedItem);
+				selectedMember.addItem(selectedItem);
+				switchUser((User)userSelector.getSelectedItem());
+			}
+		});		
 		
 		confirmButton = new JButton("Confirm");
 		confirmButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -172,6 +188,8 @@ public class MainDisplay {
 				switchUser((User)userSelector.getSelectedItem());
 			}
 		});	
+		pickupSelector = new JComboBox<Item>();
+		pickupSelector.setAlignmentX(Component.CENTER_ALIGNMENT);	
 		
 		addSelector = new JComboBox<String>();		
 		addSelector.addItem("member");
@@ -203,6 +221,7 @@ public class MainDisplay {
 		controlPanel.add(posessionPanel);
 		controlPanel.add(separator);
 		controlPanel.add(toPayPanel);
+		controlPanel.add(pickupPanel);
 		controlPanel.add(separator);
 		controlPanel.add(buttonPanel);
 		
@@ -324,6 +343,7 @@ public class MainDisplay {
 			else
 			{
 				itemSelected.addToQueue(selectedMember);
+				switchUser((User)userSelector.getSelectedItem());
 			}
 		}
 		else if (displayPanel.getComponent(0) instanceof ReturnItemDisplay)
@@ -331,10 +351,11 @@ public class MainDisplay {
 			ReturnItemDisplay currentDisplay = (ReturnItemDisplay)displayPanel.getComponent(0);
 			Member selectedMember = (Member)userSelector.getSelectedItem();
 			Item itemSelected = currentDisplay.getSelectedItem();
-			if (toPayPanel.getComponentCount() == 0)
+			double amountToPay = libraryController.getAmountToPay(selectedMember, itemSelected);
+			if (toPayPanel.getComponentCount() == 0 && amountToPay > 0)
 			{
 				toPayPanel.add(new JLabel("To pay: "));
-				toPayPanel.add(new JLabel(String.valueOf(libraryController.getAmountToPay(selectedMember, itemSelected))));	
+				toPayPanel.add(new JLabel(String.valueOf(amountToPay)));	
 				frame.revalidate();
 				frame.repaint();
 			}
@@ -344,14 +365,15 @@ public class MainDisplay {
 				selectedMember.pay(libraryController.getAmountToPay(selectedMember, itemSelected));
 				selectedMember.removeItem(itemSelected);
 				libraryController.incrementItem(itemSelected);
-				switchUser((User)userSelector.getSelectedItem());
 				
-				if(itemSelected.checkQueue())
+				if(itemSelected.hasReservations())
 				{
 					libraryController.decrementItem(itemSelected);
-					itemSelected.returnFirstInQueue().addItem(itemSelected);
+					itemSelected.returnFirstInQueue().addReadyReservation(itemSelected);
 					switchUser((User)userSelector.getSelectedItem());
 				}
+
+				switchUser((User)userSelector.getSelectedItem());
 			}	
 		}
 	}
@@ -386,6 +408,26 @@ public class MainDisplay {
 			{
 				JLabel itemLabel = new JLabel(item.getName());
 				posessionPanel.add(itemLabel);
+			}
+			for (Item item : libraryController.getItems())
+			{
+				if (item.isInQueue((Member)newUser))
+				{
+					JLabel itemLabel = new JLabel(item.getName() + " (RESERVED)");
+					posessionPanel.add(itemLabel);
+				}
+			}
+			
+			pickupPanel.removeAll();
+			if (((Member)newUser).hasReservationsReady())
+			{
+				pickupPanel.add(pickupButton);
+				pickupSelector.removeAllItems();
+				for (Item item : ((Member) newUser).getOutstantingReservations())
+				{
+					pickupSelector.addItem(item);
+				}
+				pickupPanel.add(pickupSelector);
 			}
 		}
 		
