@@ -321,6 +321,10 @@ public class MainDisplay {
 				selectedMember.addItem(itemSelected);
 				switchUser((User)userSelector.getSelectedItem());	
 			}
+			else
+			{
+				itemSelected.addToQueue(selectedMember);
+			}
 		}
 		else if (displayPanel.getComponent(0) instanceof ReturnItemDisplay)
 		{
@@ -340,7 +344,14 @@ public class MainDisplay {
 				selectedMember.removeItem(itemSelected);
 				selectedMember.pay(libraryController.getAmountToPay(selectedMember, itemSelected));
 				libraryController.incrementItem(itemSelected);
-				switchUser((User)userSelector.getSelectedItem());	
+				switchUser((User)userSelector.getSelectedItem());
+				
+				if(itemSelected.checkQueue())
+				{
+					libraryController.decrementItem(itemSelected);
+					itemSelected.returnFirstInQueue().addItem(itemSelected);
+					switchUser((User)userSelector.getSelectedItem());
+				}
 			}	
 		}
 	}

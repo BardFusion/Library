@@ -1,20 +1,51 @@
 package model;
 
+import java.util.PriorityQueue;
+
 public abstract class Item {
 	private String name;
 	private int code;
 	private int count;
+	private PriorityQueue<Member> reservationList;
 	
 	public Item(String name, int code)
 	{
 		this.name = name;
 		this.code = code;
 		count = 2;
+		reservationList = new PriorityQueue<Member>();
 	}
 	
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+	
+	public void addToQueue(Member member)
+	{
+		reservationList.add(member);
+	}
+	
+	public void removeFromQueue()
+	{
+		reservationList.remove();
+	}
+	
+	public boolean checkQueue()
+	{
+		if(reservationList.isEmpty())
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	public Member returnFirstInQueue()
+	{
+		return reservationList.poll();
 	}
 	
 	public String getName()
