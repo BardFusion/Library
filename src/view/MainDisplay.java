@@ -9,6 +9,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
@@ -31,6 +32,7 @@ public class MainDisplay {
 	private JFrame frame;
 	private JPanel controlPanel;
 	private JPanel buttonPanel;
+	private JPanel posessionPanel;
 	private JPanel addPanel;
 	private JPanel removePanel;
 	private JPanel editPanel;
@@ -56,6 +58,8 @@ public class MainDisplay {
 	private EditItemDisplay editItemDisplay;
 	private EditMemberDisplay editMemberDisplay;
 	private RemoveMemberDisplay removeMemberDisplay;
+	
+	private BorrowItemDisplay borrowItemDisplay;
 	
 	public MainDisplay()
 	{
@@ -83,10 +87,14 @@ public class MainDisplay {
 		editMemberDisplay = new EditMemberDisplay();
 		removeMemberDisplay = new RemoveMemberDisplay();
 		
+		borrowItemDisplay = new BorrowItemDisplay();
+		
 		controlPanel = new JPanel();
 		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));			
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+		posessionPanel = new JPanel();
+		posessionPanel.setLayout(new BoxLayout(posessionPanel, BoxLayout.Y_AXIS));
 		addPanel = new JPanel();
 		addPanel.setLayout(new BoxLayout(addPanel, BoxLayout.X_AXIS));
 		removePanel = new JPanel();
@@ -120,7 +128,12 @@ public class MainDisplay {
 		});	
 		
 		borrowButton = new JButton("Borrow");
-		borrowButton.setAlignmentX(Component.CENTER_ALIGNMENT);		
+		borrowButton.setAlignmentX(Component.CENTER_ALIGNMENT);	
+		borrowButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				switchControl("borrow");
+			}
+		});
 		returnButton = new JButton("Return");
 		returnButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
@@ -128,101 +141,7 @@ public class MainDisplay {
 		confirmButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		confirmButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (displayPanel.getComponent(0) instanceof AddMemberDisplay)
-				{
-					AddMemberDisplay currentDisplay = (AddMemberDisplay)displayPanel.getComponent(0);
-					String nameEntered = currentDisplay.getNameEntered();
-					String addressEntered = currentDisplay.getAddressEntered();
-					if (nameEntered.length() > 0 && addressEntered.length() > 0)
-					{						
-						libraryController.addMember(nameEntered, addressEntered);
-						currentDisplay.clear();
-						updateUserSelector();
-						switchUser((User)userSelector.getSelectedItem());
-					}
-				}
-				else if (displayPanel.getComponent(0) instanceof RemoveMemberDisplay)
-				{
-					RemoveMemberDisplay currentDisplay = (RemoveMemberDisplay)displayPanel.getComponent(0);
-					Member selectedMember = currentDisplay.getSelectedMember();
-					libraryController.removeMember(selectedMember);
-					updateUserSelector();
-					switchUser((User)userSelector.getSelectedItem());
-				}
-				else if (displayPanel.getComponent(0) instanceof EditMemberDisplay)
-				{
-					EditMemberDisplay currentDisplay = (EditMemberDisplay)displayPanel.getComponent(0);
-					String nameEntered = currentDisplay.getNameEntered();
-					String addressEntered = currentDisplay.getAddressEntered();
-					if (nameEntered.length() > 0 && addressEntered.length() > 0)
-					{
-						Member selectedMember = currentDisplay.getSelectedMember();
-						selectedMember.setName(nameEntered);
-						selectedMember.setAddress(addressEntered);
-						switchUser((User)userSelector.getSelectedItem());
-					}					
-				}
-				else if (displayPanel.getComponent(0) instanceof AddItemDisplay)
-				{
-					AddItemDisplay currentDisplay = (AddItemDisplay)displayPanel.getComponent(0);
-					String nameEntered = currentDisplay.getNameEntered();
-					if (nameEntered.length() > 0)
-					{
-						switch(currentDisplay.getItemType())
-						{
-							case "book":			
-								BookType bookTypeSelected = currentDisplay.getBookTypeSelected();
-								libraryController.addBook(nameEntered, bookTypeSelected);
-								break;
-							case "dvd":
-								MovieCategory movieCategorySelected = currentDisplay.getMovieCategorySelected();
-								libraryController.addDVD(nameEntered, movieCategorySelected);
-								break;
-							case "cd":
-								MusicGenre musicGenreSelected = currentDisplay.getMusicGenreSelected();
-								libraryController.addCD(nameEntered, musicGenreSelected);
-								break;						
-						}
-						currentDisplay.clear();
-						switchUser((User)userSelector.getSelectedItem());
-					}					
-				}
-				else if (displayPanel.getComponent(0) instanceof RemoveItemDisplay)
-				{
-					RemoveItemDisplay currentDisplay = (RemoveItemDisplay)displayPanel.getComponent(0);
-					Item itemSelected = currentDisplay.getSelectedItem();
-					libraryController.removeItem(itemSelected);
-					switchUser((User)userSelector.getSelectedItem());
-				}
-				else if (displayPanel.getComponent(0) instanceof EditItemDisplay)
-				{
-					EditItemDisplay currentDisplay = (EditItemDisplay)displayPanel.getComponent(0);
-					String nameEntered = currentDisplay.getNameEntered();
-					if (nameEntered.length() > 0)
-					{
-						Item selectedItem = currentDisplay.getSelectedItem();
-						selectedItem.setName(nameEntered);
-						if (selectedItem instanceof Book)
-						{
-							BookType bookTypeSelected = currentDisplay.getBookTypeSelected();
-							Book selectedBook = (Book)selectedItem;
-							selectedBook.setType(bookTypeSelected);
-						}
-						else if (selectedItem instanceof DVD)
-						{
-							MovieCategory movieCategorySelected = currentDisplay.getMovieCategorySelected();
-							DVD selectedDVD = (DVD)selectedItem;
-							selectedDVD.setCategory(movieCategorySelected);
-						}
-						else if (selectedItem instanceof CD)
-						{
-							MusicGenre musicGenreSelected = currentDisplay.getMusicGenreSelected();
-							CD selectedCD = (CD)selectedItem;
-							selectedCD.setGenre(musicGenreSelected);
-						}
-						switchUser((User)userSelector.getSelectedItem());
-					}					
-				}
+				processConfirm();
 			}
 		});
 		backButton = new JButton("Back");
@@ -267,6 +186,8 @@ public class MainDisplay {
 
 		controlPanel.add(userSelector);
 		controlPanel.add(separator);
+		controlPanel.add(posessionPanel);
+		controlPanel.add(separator);
 		controlPanel.add(buttonPanel);
 		
 		updateUserSelector();
@@ -274,6 +195,117 @@ public class MainDisplay {
 				
 		frame.getContentPane().add(controlPanel, BorderLayout.WEST);
 		frame.getContentPane().add(displayPanel, BorderLayout.CENTER);
+	}
+	
+	private void processConfirm()
+	{
+		if (displayPanel.getComponent(0) instanceof AddMemberDisplay)
+		{
+			AddMemberDisplay currentDisplay = (AddMemberDisplay)displayPanel.getComponent(0);
+			String nameEntered = currentDisplay.getNameEntered();
+			String addressEntered = currentDisplay.getAddressEntered();
+			if (nameEntered.length() > 0 && addressEntered.length() > 0)
+			{						
+				libraryController.addMember(nameEntered, addressEntered);
+				currentDisplay.clear();
+				updateUserSelector();
+				switchUser((User)userSelector.getSelectedItem());
+			}
+		}
+		else if (displayPanel.getComponent(0) instanceof RemoveMemberDisplay)
+		{
+			RemoveMemberDisplay currentDisplay = (RemoveMemberDisplay)displayPanel.getComponent(0);
+			Member selectedMember = currentDisplay.getSelectedMember();
+			libraryController.removeMember(selectedMember);
+			updateUserSelector();
+			switchUser((User)userSelector.getSelectedItem());
+		}
+		else if (displayPanel.getComponent(0) instanceof EditMemberDisplay)
+		{
+			EditMemberDisplay currentDisplay = (EditMemberDisplay)displayPanel.getComponent(0);
+			String nameEntered = currentDisplay.getNameEntered();
+			String addressEntered = currentDisplay.getAddressEntered();
+			if (nameEntered.length() > 0 && addressEntered.length() > 0)
+			{
+				Member selectedMember = currentDisplay.getSelectedMember();
+				selectedMember.setName(nameEntered);
+				selectedMember.setAddress(addressEntered);
+				switchUser((User)userSelector.getSelectedItem());
+			}					
+		}
+		else if (displayPanel.getComponent(0) instanceof AddItemDisplay)
+		{
+			AddItemDisplay currentDisplay = (AddItemDisplay)displayPanel.getComponent(0);
+			String nameEntered = currentDisplay.getNameEntered();
+			if (nameEntered.length() > 0)
+			{
+				switch(currentDisplay.getItemType())
+				{
+					case "book":			
+						BookType bookTypeSelected = currentDisplay.getBookTypeSelected();
+						libraryController.addBook(nameEntered, bookTypeSelected);
+						break;
+					case "dvd":
+						MovieCategory movieCategorySelected = currentDisplay.getMovieCategorySelected();
+						libraryController.addDVD(nameEntered, movieCategorySelected);
+						break;
+					case "cd":
+						MusicGenre musicGenreSelected = currentDisplay.getMusicGenreSelected();
+						libraryController.addCD(nameEntered, musicGenreSelected);
+						break;						
+				}
+				currentDisplay.clear();
+				switchUser((User)userSelector.getSelectedItem());
+			}					
+		}
+		else if (displayPanel.getComponent(0) instanceof RemoveItemDisplay)
+		{
+			RemoveItemDisplay currentDisplay = (RemoveItemDisplay)displayPanel.getComponent(0);
+			Item itemSelected = currentDisplay.getSelectedItem();
+			libraryController.removeItem(itemSelected);
+			switchUser((User)userSelector.getSelectedItem());
+		}
+		else if (displayPanel.getComponent(0) instanceof EditItemDisplay)
+		{
+			EditItemDisplay currentDisplay = (EditItemDisplay)displayPanel.getComponent(0);
+			String nameEntered = currentDisplay.getNameEntered();
+			if (nameEntered.length() > 0)
+			{
+				Item selectedItem = currentDisplay.getSelectedItem();
+				selectedItem.setName(nameEntered);
+				if (selectedItem instanceof Book)
+				{
+					BookType bookTypeSelected = currentDisplay.getBookTypeSelected();
+					Book selectedBook = (Book)selectedItem;
+					selectedBook.setType(bookTypeSelected);
+				}
+				else if (selectedItem instanceof DVD)
+				{
+					MovieCategory movieCategorySelected = currentDisplay.getMovieCategorySelected();
+					DVD selectedDVD = (DVD)selectedItem;
+					selectedDVD.setCategory(movieCategorySelected);
+				}
+				else if (selectedItem instanceof CD)
+				{
+					MusicGenre musicGenreSelected = currentDisplay.getMusicGenreSelected();
+					CD selectedCD = (CD)selectedItem;
+					selectedCD.setGenre(musicGenreSelected);
+				}
+				switchUser((User)userSelector.getSelectedItem());
+			}					
+		}
+		else if (displayPanel.getComponent(0) instanceof BorrowItemDisplay)
+		{
+			BorrowItemDisplay currentDisplay = (BorrowItemDisplay)displayPanel.getComponent(0);
+			Member selectedMember = (Member)userSelector.getSelectedItem();
+			Item itemSelected = currentDisplay.getSelectedItem();
+			if (itemSelected.getCount() > 0 && selectedMember.getPosession().size() < 6)
+			{
+				libraryController.decrementItem(itemSelected);
+				selectedMember.addItem(itemSelected);
+				switchUser((User)userSelector.getSelectedItem());	
+			}
+		}
 	}
 	
 	private void switchUser(User newUser)
@@ -285,6 +317,8 @@ public class MainDisplay {
 			buttonPanel.add(addPanel);
 			buttonPanel.add(removePanel);
 			buttonPanel.add(editPanel);
+			
+			posessionPanel.removeAll();
 		}
 		else if (newUser instanceof Member)
 		{
@@ -292,6 +326,14 @@ public class MainDisplay {
 			
 			buttonPanel.add(borrowButton);
 			buttonPanel.add(returnButton);
+			
+			posessionPanel.removeAll();
+			posessionPanel.add(new JLabel("Posession:"));
+			for (Item item : ((Member) newUser).getPosession())
+			{
+				JLabel itemLabel = new JLabel(item.getName());
+				posessionPanel.add(itemLabel);
+			}
 		}
 		
 		displayPanel.removeAll();
@@ -380,7 +422,18 @@ public class MainDisplay {
 						break;
 				}
 				break;
-			default:
+			case "borrow":
+				buttonPanel.removeAll();	
+				buttonPanel.add(backButton);
+				
+				displayPanel.removeAll();
+				if (libraryController.getItems().size() > 0)
+				{
+					buttonPanel.add(confirmButton);
+				}
+				borrowItemDisplay.updateItemSelection(libraryController.getItems());
+				displayPanel.add(borrowItemDisplay);
+				break;
 		}
 		
 		frame.revalidate();

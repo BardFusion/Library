@@ -15,6 +15,11 @@ public class Member extends User{
 		posession = new ArrayList<Item>();
 	}
 	
+	public void addItem(Item item)
+	{
+		posession.add(item);
+	}
+	
 	public void setAddress(String address)
 	{
 		this.address = address;
@@ -23,5 +28,10 @@ public class Member extends User{
 	public String getAddress()
 	{
 		return address;
+	}
+	
+	public List<Item> getPosession()
+	{
+		return posession;
 	}
 }

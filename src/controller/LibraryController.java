@@ -80,4 +80,14 @@ public class LibraryController {
 	{
 		library.removeItem(item);
 	}
+	
+	public void incrementItem(Item item)
+	{
+		library.incrementItem(item);
+	}
+	
+	public void decrementItem(Item item)
+	{
+		library.decrementItem(item);
+	}
 }
