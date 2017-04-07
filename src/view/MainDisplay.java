@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
@@ -385,9 +386,11 @@ public class MainDisplay {
 				
 				if(itemSelected.hasReservations())
 				{
+					String firstMemberinQueue = itemSelected.returnFirstInQueue().getName();
 					libraryController.decrementItem(itemSelected);
-					itemSelected.returnFirstInQueue().addReadyReservation(itemSelected);
+					itemSelected.returnFirstInQueueAndPop().addReadyReservation(itemSelected);
 					switchUser((User)userSelector.getSelectedItem());
+					JOptionPane.showMessageDialog(frame, firstMemberinQueue + " has a new item to pickup");
 				}
 
 				switchUser((User)userSelector.getSelectedItem());

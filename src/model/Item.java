@@ -53,6 +53,11 @@ public abstract class Item {
 	
 	public Member returnFirstInQueue()
 	{
+		return reservationList.peek();
+	}
+	
+	public Member returnFirstInQueueAndPop()
+	{
 		return reservationList.poll();
 	}
 	
