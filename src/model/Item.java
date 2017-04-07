@@ -81,19 +81,19 @@ public abstract class Item {
 	{
 		if (this instanceof Book)
 		{
-			return "Book " + code + ": " + name;
+			return "Book " + code + ": " + name + ", " + count + " left";
 		}
 		else if (this instanceof DVD)
 		{
-			return "DVD " + code + ": " + name;
+			return "DVD " + code + ": " + name + ", " + count + " left";
 		}
 		else if (this instanceof CD)
 		{
-			return "CD " + code + ": " + name;
+			return "CD " + code + ": " + name + ", " + count + " left";
 		}
 		else
 		{
-			return "Unknown " + code + ": " + name;
+			return "Unknown " + code + ": " + name + ", " + count + " available";
 		}
 	}
 }

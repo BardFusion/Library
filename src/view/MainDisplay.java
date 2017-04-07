@@ -51,6 +51,7 @@ public class MainDisplay {
 	private JButton returnButton;
 	private JButton pickupButton;
 	private JButton addButton;
+	private JButton incrementButton;
 	private JButton removeButton;
 	private JButton editButton;
 	private JButton confirmButton;
@@ -59,6 +60,7 @@ public class MainDisplay {
 	private WelcomeDisplay welcomeDisplay;
 	private AddMemberDisplay addMemberDisplay;
 	private AddItemDisplay addItemDisplay;
+	private IncrementItemDisplay incrementItemDisplay;
 	private RemoveItemDisplay removeItemDisplay;
 	private EditItemDisplay editItemDisplay;
 	private EditMemberDisplay editMemberDisplay;
@@ -88,6 +90,7 @@ public class MainDisplay {
 		welcomeDisplay = new WelcomeDisplay();
 		addMemberDisplay = new AddMemberDisplay();
 		addItemDisplay = new AddItemDisplay();
+		incrementItemDisplay = new IncrementItemDisplay();
 		removeItemDisplay = new RemoveItemDisplay();
 		editItemDisplay = new EditItemDisplay();
 		editMemberDisplay = new EditMemberDisplay();
@@ -125,6 +128,13 @@ public class MainDisplay {
 				switchControl("add");
 			}
 		});		
+		incrementButton = new JButton("Add existing item");
+		incrementButton.setAlignmentX(Component.CENTER_ALIGNMENT);		
+		incrementButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				switchControl("increment");
+			}
+		});	
 		removeButton = new JButton("Remove");
 		removeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		removeButton.addActionListener(new ActionListener() {
@@ -293,6 +303,13 @@ public class MainDisplay {
 				switchUser((User)userSelector.getSelectedItem());
 			}					
 		}
+		else if (displayPanel.getComponent(0) instanceof IncrementItemDisplay)
+		{
+			IncrementItemDisplay currentDisplay = (IncrementItemDisplay)displayPanel.getComponent(0);
+			Item selectedItem = currentDisplay.getSelectedItem();
+			libraryController.incrementItem(selectedItem);		
+			switchUser((User)userSelector.getSelectedItem());
+		}
 		else if (displayPanel.getComponent(0) instanceof RemoveItemDisplay)
 		{
 			RemoveItemDisplay currentDisplay = (RemoveItemDisplay)displayPanel.getComponent(0);
@@ -385,6 +402,7 @@ public class MainDisplay {
 			buttonPanel.removeAll();
 			
 			buttonPanel.add(addPanel);
+			buttonPanel.add(incrementButton);
 			buttonPanel.add(removePanel);
 			buttonPanel.add(editPanel);
 			
@@ -466,6 +484,18 @@ public class MainDisplay {
 						addItemDisplay.setItemType(ItemType.CD);
 						break;
 				}
+				break;
+			case "increment":
+				buttonPanel.removeAll();	
+				buttonPanel.add(backButton);
+				
+				displayPanel.removeAll();
+				if (libraryController.getItems().size() > 0)
+				{
+					buttonPanel.add(confirmButton);
+				}
+				incrementItemDisplay.updateItemSelection(libraryController.getItems());
+				displayPanel.add(incrementItemDisplay);
 				break;
 			case "remove":
 				buttonPanel.removeAll();	
