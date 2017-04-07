@@ -1,12 +1,10 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import model.Book;
 import model.BookType;
-import model.CD;
-import model.DVD;
 import model.Item;
 import model.Library;
 import model.Member;
@@ -93,6 +91,6 @@ public class LibraryController {
 	
 	public double getAmountToPay(Member member, Item item)
 	{
-		return 10;
+		return library.getAmountToPay(item, member.getBorrowedDate(item), new Date());
 	}
 }
