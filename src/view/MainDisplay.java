@@ -337,8 +337,8 @@ public class MainDisplay {
 			else
 			{
 				toPayPanel.removeAll();
-				selectedMember.removeItem(itemSelected);
 				selectedMember.pay(libraryController.getAmountToPay(selectedMember, itemSelected));
+				selectedMember.removeItem(itemSelected);
 				libraryController.incrementItem(itemSelected);
 				switchUser((User)userSelector.getSelectedItem());	
 			}	
