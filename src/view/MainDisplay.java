@@ -32,7 +32,9 @@ public class MainDisplay {
 	private JFrame frame;
 	private JPanel controlPanel;
 	private JPanel buttonPanel;
+	private JPanel moneyPanel;
 	private JPanel posessionPanel;
+	private JPanel toPayPanel;
 	private JPanel addPanel;
 	private JPanel removePanel;
 	private JPanel editPanel;
@@ -95,8 +97,12 @@ public class MainDisplay {
 		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));			
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+		moneyPanel = new JPanel();
+		moneyPanel.setLayout(new BoxLayout(moneyPanel, BoxLayout.X_AXIS));
 		posessionPanel = new JPanel();
 		posessionPanel.setLayout(new BoxLayout(posessionPanel, BoxLayout.Y_AXIS));
+		toPayPanel = new JPanel();
+		toPayPanel.setLayout(new BoxLayout(toPayPanel, BoxLayout.Y_AXIS));
 		addPanel = new JPanel();
 		addPanel.setLayout(new BoxLayout(addPanel, BoxLayout.X_AXIS));
 		removePanel = new JPanel();
@@ -193,7 +199,10 @@ public class MainDisplay {
 
 		controlPanel.add(userSelector);
 		controlPanel.add(separator);
+		controlPanel.add(moneyPanel);
 		controlPanel.add(posessionPanel);
+		controlPanel.add(separator);
+		controlPanel.add(toPayPanel);
 		controlPanel.add(separator);
 		controlPanel.add(buttonPanel);
 		
@@ -318,9 +327,21 @@ public class MainDisplay {
 			ReturnItemDisplay currentDisplay = (ReturnItemDisplay)displayPanel.getComponent(0);
 			Member selectedMember = (Member)userSelector.getSelectedItem();
 			Item itemSelected = currentDisplay.getSelectedItem();
-			selectedMember.removeItem(itemSelected);
-			libraryController.incrementItem(itemSelected);
-			switchUser((User)userSelector.getSelectedItem());		
+			if (toPayPanel.getComponentCount() == 0)
+			{
+				toPayPanel.add(new JLabel("To pay: "));
+				toPayPanel.add(new JLabel(String.valueOf(libraryController.getAmountToPay(selectedMember, itemSelected))));	
+				frame.revalidate();
+				frame.repaint();
+			}
+			else
+			{
+				toPayPanel.removeAll();
+				selectedMember.removeItem(itemSelected);
+				selectedMember.pay(libraryController.getAmountToPay(selectedMember, itemSelected));
+				libraryController.incrementItem(itemSelected);
+				switchUser((User)userSelector.getSelectedItem());	
+			}	
 		}
 	}
 	
@@ -334,6 +355,7 @@ public class MainDisplay {
 			buttonPanel.add(removePanel);
 			buttonPanel.add(editPanel);
 			
+			moneyPanel.removeAll();
 			posessionPanel.removeAll();
 		}
 		else if (newUser instanceof Member)
@@ -342,6 +364,10 @@ public class MainDisplay {
 			
 			buttonPanel.add(borrowButton);
 			buttonPanel.add(returnButton);
+			
+			moneyPanel.removeAll();
+			moneyPanel.add(new JLabel("Money: "));
+			moneyPanel.add(new JLabel(String.valueOf(((Member) newUser).getMoney())));
 			
 			posessionPanel.removeAll();
 			posessionPanel.add(new JLabel("Posession:"));

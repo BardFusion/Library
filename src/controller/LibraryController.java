@@ -90,4 +90,9 @@ public class LibraryController {
 	{
 		library.decrementItem(item);
 	}
+	
+	public double getAmountToPay(Member member, Item item)
+	{
+		return 10;
+	}
 }
